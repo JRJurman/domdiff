@@ -949,11 +949,7 @@ newState = domdiff(
 );
 compare(newState, 'a');
 
-newState = domdiff(
-  document.body,
-  newState,
-  []
-);
+tressa.log('## sort logic');
 
 var data = [
   {"id": 4054, "title": "Serie 2"},
@@ -985,5 +981,28 @@ newState = domdiff(
     return a.title.localeCompare(b.title);
   }).map(getItem)
 );
+
+tressa.log('## isSameNode comparator');
+
+var keyedNodes = ['a', 'b'].map(function(value) {
+  var element = document.createElement('div')
+  element.id = 'key'
+  element.textContent = value
+  return element
+})
+
+var isSameNode = function isSameNode(left, right) {
+  return (left.id === right.id)
+}
+
+newState = domdiff(
+  document.body,
+  [keyedNodes[0]],
+  [keyedNodes[1]],
+  null,
+  null,
+  isSameNode
+);
+// NEED TO DO COMPARE
 
 tressa.end();

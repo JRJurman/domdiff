@@ -14,7 +14,8 @@ futureNodes = domdiff(
   currentNodes,   // Array of current items/nodes
   futureNodes,    // Array of future items/nodes (returned)
   getNode,        // optional way to retrieve a node from an item
-  beforeNode      // optional item/node to use as insertBefore delimiter
+  beforeNode,     // optional item/node to use as insertBefore delimiter
+  isSameNode      // optional compare function between nodes
 );
 ```
 

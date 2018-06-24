@@ -25,10 +25,12 @@ const domdiff = (
   currentNodes,   // Array of current items/nodes
   futureNodes,    // Array of future items/nodes
   getNode,        // optional way to retrieve a node from an item
-  beforeNode      // optional item/node to use as insertBefore delimiter
+  beforeNode,     // optional item/node to use as insertBefore delimiter
+  isSameNode      // optional function to compare nodes
 ) => {
   const get = getNode || identity;
   const before = beforeNode == null ? null : get(beforeNode, 0);
+  const isSame = isSameNode || ((left, right) => (left === right));
   let currentStart = 0, futureStart = 0;
   let currentEnd = currentNodes.length - 1;
   let currentStartNode = currentNodes[0];
@@ -49,15 +51,15 @@ const domdiff = (
     else if (futureEndNode == null) {
       futureEndNode = futureNodes[--futureEnd];
     }
-    else if (currentStartNode == futureStartNode) {
+    else if (isSame(currentStartNode, futureStartNode)) {
       currentStartNode = currentNodes[++currentStart];
       futureStartNode = futureNodes[++futureStart];
     }
-    else if (currentEndNode == futureEndNode) {
+    else if (isSame(currentEndNode, futureEndNode)) {
       currentEndNode = currentNodes[--currentEnd];
       futureEndNode = futureNodes[--futureEnd];
     }
-    else if (currentStartNode == futureEndNode) {
+    else if (isSame(currentStartNode, futureEndNode)) {
       parentNode.insertBefore(
         get(currentStartNode, 1),
         get(currentEndNode, -0).nextSibling
@@ -65,7 +67,7 @@ const domdiff = (
       currentStartNode = currentNodes[++currentStart];
       futureEndNode = futureNodes[--futureEnd];
     }
-    else if (currentEndNode == futureStartNode) {
+    else if (isSame(currentEndNode, futureStartNode)) {
       parentNode.insertBefore(
         get(currentEndNode, 1),
         get(currentStartNode, 0)
@@ -88,7 +90,7 @@ const domdiff = (
         while (
           i <= currentEnd &&
           f <= futureEnd &&
-          currentNodes[i] === futureNodes[f]
+          isSame(currentNodes[i], futureNodes[f])
         ) {
           i++;
           f++;
